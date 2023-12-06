@@ -88,6 +88,7 @@ class ChatListScreenState extends State<ChatListScreen> {
           chatService
             .createChat()
             .then((value){
+              debugPrint(value.toString());
               Get.toNamed(
                 '/chatScreen', 
                 arguments: value

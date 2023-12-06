@@ -86,7 +86,7 @@ class ChatScreenState extends State<ChatScreen> {
           child: isEditingTitle
               ? TextFormField(
                   controller: titleController,
-                  style: const TextStyle(color: Color(0xff343541)),
+                  style: const TextStyle(color: Color.fromARGB(255, 223, 223, 223)),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Escreva o novo título',

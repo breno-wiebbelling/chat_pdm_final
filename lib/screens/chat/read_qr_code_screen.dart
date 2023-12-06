@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-
 import 'chat_read_screen.dart';
 
 class ReadQRCodeScreen extends StatefulWidget {
@@ -16,7 +17,16 @@ class ReadQRCodeScreen extends StatefulWidget {
 class ReadQRCodeScreenState extends State<ReadQRCodeScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController controller;
-  bool scanning = true;
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller.resumeCamera();
+    } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +54,11 @@ class ReadQRCodeScreenState extends State<ReadQRCodeScreen> {
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  Get.toNamed(ReadChatScreenReadMode.routeName);
+                  Get.offNamed(ReadChatScreenReadMode.routeName);
                 },
-                child: Text(
-                  scanning ? 'Scanning for QR Code...' : 'QR Code Found!',
-                  style: const TextStyle(fontSize: 16),
+                child: const Text(
+                  'Scanning for QR Code...',
+                  style: TextStyle(fontSize: 16),
                 ),
               )
             ),
@@ -59,12 +69,12 @@ class ReadQRCodeScreenState extends State<ReadQRCodeScreen> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
+    
     this.controller = controller;
 
     controller.scannedDataStream.listen((scanData) {
       setState(() {
-        scanning = false;
-        Get.toNamed(ReadChatScreenReadMode.routeName);
+        Get.offNamed(ReadChatScreenReadMode.routeName);
       });
     });
   }

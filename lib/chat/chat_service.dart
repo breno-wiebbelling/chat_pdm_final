@@ -56,12 +56,14 @@ class ChatService {
         'lastMessage': "No que posso lhe ajudar?!",
       });
 
-      DataSnapshot snap = await newChatReference.get();
       newChatReference.child("messages")
         .push()
         .set(
           MessageDTO("No que posso lhe ajudar?!", DateTime.now(), false).toJson()
         );
+
+      DataSnapshot snap = await newChatReference.get();
+      debugPrint(snap.toString());
 
       return ChatDTO.fromJson(newChatReference.key!, snap.value as Map<dynamic, dynamic>);
     } catch (error) {
@@ -95,9 +97,15 @@ class ChatService {
   }
 
   String getChatTitle(String chatId) {
-    Map<dynamic, dynamic> chat = _chatListReference.child(chatId).get() as Map<dynamic, dynamic>;
+    try{
+      Map<dynamic, dynamic> chat = _chatListReference.child(chatId).get() as Map<dynamic, dynamic>;
+      return ChatDTO.fromJson("id", chat).title ?? "Chat sem título!";
 
-    return ChatDTO.fromJson("id", chat).title ?? "Chat sem título!";
+    }catch(error){
+      debugPrint("Error getting chat title: $error");
+    }
+
+    return "Chat sem título!";
   }
 }
 
